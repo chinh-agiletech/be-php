@@ -28,7 +28,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $data['password'] = bcrypt($data['password']);
+
+        $user = $this->sevices->create($data);
+
+        return response()->json([
+            'message' => 'User created successfully',
+            'user' => UserResource::toArray($user)
+        ], 201);
     }
 
     /**
@@ -36,7 +49,13 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = $this->sevices->findById($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return new UserResource($user);
     }
 
     /**
@@ -44,7 +63,26 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'sometimes|required|string|min:8|confirmed',
+        ]);
+
+        if (isset($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+        $user = $this->sevices->update($id, $data);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => UserResource::toArray($user)
+        ]);
     }
 
     /**
@@ -52,6 +90,14 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = $this->sevices->findById($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $this->sevices->delete($id);
+
+        return response()->json(['message' => 'User deleted successfully']);
     }
 }

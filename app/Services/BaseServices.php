@@ -74,25 +74,29 @@ abstract class BaseServices
      * @param array $data
      * @return bool
      */
-    public function update($id, array $data): bool
+    public function update($id, array $data): void
     {
         $model = $this->findById($id);
 
-        return $model ? $model->update($data) : false;
+        if ($model) {
+            $model->update($data);
+        }
     }
-
     /**
      * Delete record by ID.
      *
      * @param int|string $id
      * @return bool
      */
-    public function delete($id): bool
+    public function delete($id): void
     {
         $model = $this->findById($id);
 
-        return $model ? $model->delete() : false;
+        if ($model) {
+            $model->delete();
+        }
     }
+
 
     /**
      * Transform model to resource.

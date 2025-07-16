@@ -1,26 +1,45 @@
 <?php
 
 namespace App\Services\User;
+use App\Models\User;
+use App\Repositories\User\userRepository;
 use App\Services\BaseServices;
 class userService extends BaseServices
 {
-    /**
-     * Get the model class name.
-     *
-     * @return string
-     */
-    protected function getModelClass(): string
+    protected $repository;
+
+    public function __construct(UserRepository $repository)
     {
-        return \App\Models\User::class;
+        $this->repository = $repository;
     }
 
-    /**
-     * Get the resource class name.
-     *
-     * @return string
-     */
-    protected function getResourceClass(): string
+    public function getAll(): \Illuminate\Support\Collection
     {
-        return \App\Http\Resources\UserResource::class;
+        return $this->repository->getAll();
+    }
+
+    public function findById($id): User
+    {
+        return $this->repository->findById($id);
+    }
+
+    public function create(array $data): User
+    {
+        return $this->repository->create($data);
+    }
+
+    public function update($id, array $data): void
+    {
+        $this->repository->update($id, $data);
+    }
+
+    public function delete($id): void
+    {
+        $this->repository->delete($id);
+    }
+
+    protected function getModelClass(): string
+    {
+        return User::class;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\User\userService;
+use App\Resources\UserResource;
 class UserController extends Controller
 {
     protected $sevices;
@@ -18,7 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $data = $this->sevices->getAll();
+        return UserResource::collection($data);
     }
 
     /**

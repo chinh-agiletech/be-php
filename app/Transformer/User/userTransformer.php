@@ -15,14 +15,4 @@ class userTransformer extends BaseTransformer
     {
         return \App\Models\User::class;
     }
-
-    /**
-     * Get the resource class name.
-     *
-     * @return string|null
-     */
-    protected function getResourceClass(): ?string
-    {
-        return \App\Http\Resources\UserResource::class;
-    }
 }

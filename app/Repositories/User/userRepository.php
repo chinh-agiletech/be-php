@@ -25,4 +25,25 @@ class userRepository extends BaseRepository
     {
         return $this->model->create($data);
     }
+
+    public function update($id, array $data)
+    {
+        $user = $this->model->find($id);
+        if ($user) {
+            $user->update($data);
+            return $user;
+        }
+        return null;
+    }
+
+    public function delete($id): void
+    {
+        $user = $this->model->find($id);
+        $user->delete();
+    }
+
+    public function findById(int|string $id)
+    {
+        return $this->model->find($id);
+    }
 }

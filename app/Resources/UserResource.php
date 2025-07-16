@@ -19,4 +19,8 @@ class UserResource {
             'updated_at' => $user->updated_at->toDateTimeString(),
         ];
     }
+
+    public static function collection(\Illuminate\Support\Collection $data)
+    {
+    }
 }

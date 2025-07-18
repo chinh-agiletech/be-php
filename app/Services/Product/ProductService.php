@@ -2,6 +2,7 @@
 
 namespace App\Services\Product;
 
+use App\Models\Product;
 use App\Repositories\Product\ProductRepository;
 use App\Services\BaseServices;
 
@@ -14,24 +15,24 @@ class ProductService extends BaseServices
         $this->repository = $repository;
     }
 
-    public function getAll()
+    public function getAll(): \Illuminate\Support\Collection
     {
         return $this->repository->getAll();
     }
 
-    public function findById($id)
+    public function findById($id): Product
     {
         return $this->repository->getById($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Product
     {
         return $this->repository->create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data): void
     {
-        return $this->repository->update($id, $data);
+        $this->repository->update($id, $data);
     }
 
     public function delete($id): void
@@ -41,6 +42,6 @@ class ProductService extends BaseServices
 
     protected function getModelClass(): string
     {
-        // TODO: Implement getModelClass() method.
+        return Product::class;
     }
 }

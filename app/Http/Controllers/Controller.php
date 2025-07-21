@@ -2,32 +2,47 @@
 
 namespace App\Http\Controllers;
 
-abstract class Controller
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller as LaravelController;
+
+abstract class Controller extends LaravelController
 {
     /**
-     * Get the model class name.
+     * Send a success response.
      *
-     * @return string
+     * @param mixed $data
+     * @param string $message
+     * @param int $code
+     * @return JsonResponse
      */
-    abstract protected function getModelClass(): string;
-
-    /**
-     * Get the resource class name.
-     *
-     * @return string|null
-     */
-    protected function getResourceClass(): ?string
+    protected function successResponse($data = null, string $message = 'Success', int $code = 200): JsonResponse
     {
-        return null;
+        return response()->json([
+            'status' => true,
+            'message' => $message,
+            'data' => $data,
+        ], $code);
     }
 
     /**
-     * Get the model instance.
+     * Send an error response.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param string $message
+     * @param int $code
+     * @param array|null $errors
+     * @return JsonResponse
      */
-    public function model()
+    protected function errorResponse(string $message = 'Error', int $code = 400, array $errors = null): JsonResponse
     {
-        return app($this->getModelClass());
+        $response = [
+            'status' => false,
+            'message' => $message,
+        ];
+
+        if (!is_null($errors)) {
+            $response['errors'] = $errors;
+        }
+
+        return response()->json($response, $code);
     }
 }

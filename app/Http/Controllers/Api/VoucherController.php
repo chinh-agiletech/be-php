@@ -60,9 +60,4 @@ class VoucherController extends Controller
         $this->service->deleteVoucher($id);
         return response()->json(['message' => 'Voucher deleted successfully'], 204);
     }
-
-    protected function getModelClass(): string
-    {
-        return \App\Models\Voucher::class;
-    }
 }

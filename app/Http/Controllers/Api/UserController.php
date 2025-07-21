@@ -61,7 +61,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): void
     {
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
@@ -74,15 +74,6 @@ class UserController extends Controller
         }
 
         $user = $this->sevices->update($id, $data);
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        return response()->json([
-            'message' => 'User updated successfully',
-            'user' => UserResource::toArray($user)
-        ]);
     }
 
     /**

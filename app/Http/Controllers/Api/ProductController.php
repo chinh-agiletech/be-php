@@ -76,8 +76,5 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product deleted successfully'], 204);
     }
 
-    protected function getModelClass(): string
-    {
-        return \App\Models\Product::class;
-    }
+
 }

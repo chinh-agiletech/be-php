@@ -47,9 +47,4 @@ class CategoryController extends Controller
         $this->service->delete($id);
         return response()->json(['message' => 'Category deleted successfully'], 204);
     }
-
-    protected function getModelClass(): string
-    {
-        return \App\Models\Category::class;
-    }
 }

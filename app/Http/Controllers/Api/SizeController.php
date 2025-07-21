@@ -55,8 +55,4 @@ class SizeController extends Controller
         //
     }
 
-    protected function getModelClass(): string
-    {
-        // TODO: Implement getModelClass() method.
-    }
 }

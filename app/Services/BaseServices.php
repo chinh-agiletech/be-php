@@ -26,16 +26,6 @@ abstract class BaseServices
     }
 
     /**
-     * Create model instance.
-     *
-     * @return Model
-     */
-    public function model(): Model
-    {
-        return app($this->getModelClass());
-    }
-
-    /**
      * Get all records.
      *
      * @return Collection

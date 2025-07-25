@@ -16,7 +16,7 @@ class Product extends Model
      *
      * @var array
      */
-    protected $with = ['sizes', 'colors'];
+    protected $with = ['sizes', 'colors', 'brand'];
 
     /**
      * The accessors to append to the model's array form.
@@ -31,6 +31,14 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the brand that owns the product
+     */
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     /**

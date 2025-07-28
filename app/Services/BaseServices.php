@@ -9,11 +9,21 @@ use Illuminate\Support\Collection;
 abstract class BaseServices
 {
     /**
-     * Get the model class name.
+     * The repository instance.
      *
-     * @return string
+     * @var mixed
      */
-    abstract protected function getModelClass(): string;
+    protected $repository;
+
+    /**
+     * Inject repository through the constructor.
+     *
+     * @param mixed $repository
+     */
+    public function __construct($repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
      * Get the resource class name.
@@ -32,7 +42,7 @@ abstract class BaseServices
      */
     public function getAll(): Collection
     {
-        return $this->model()->newQuery()->get();
+        return $this->repository->getAll();
     }
 
     /**
@@ -43,7 +53,7 @@ abstract class BaseServices
      */
     public function findById($id): ?Model
     {
-        return $this->model()->find($id);
+        return $this->repository->findById($id);
     }
 
     /**
@@ -54,7 +64,7 @@ abstract class BaseServices
      */
     public function create(array $data): Model
     {
-        return $this->model()->create($data);
+        return $this->repository->create($data);
     }
 
     /**
@@ -62,31 +72,23 @@ abstract class BaseServices
      *
      * @param int|string $id
      * @param array $data
-     * @return bool
+     * @return void
      */
     public function update($id, array $data): void
     {
-        $model = $this->findById($id);
-
-        if ($model) {
-            $model->update($data);
-        }
+        $this->repository->update($id, $data);
     }
+
     /**
      * Delete record by ID.
      *
      * @param int|string $id
-     * @return bool
+     * @return void
      */
     public function delete($id): void
     {
-        $model = $this->findById($id);
-
-        if ($model) {
-            $model->delete();
-        }
+        $this->repository->delete($id);
     }
-
 
     /**
      * Transform model to resource.

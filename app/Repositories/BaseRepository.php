@@ -4,48 +4,82 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Collection;
 
-class BaseRepository {
+abstract class BaseRepository
+{
     /**
-     * Get the model class name.
-     *
-     * @return string
+     * Lấy tên class model.
      */
-    protected function getModelClass(): string
-    {
-        return Model::class;
-    }
+    abstract protected function modelClass(): string;
 
     /**
-     * Get the resource class name.
-     *
-     * @return string
+     * Lấy tên class resource.
      */
-    protected function getResourceClass(): string
-    {
-        return JsonResource::class;
-    }
+    abstract protected function resourceClass(): string;
 
     /**
-     * Get the model instance.
-     *
-     * @return Model
+     * Khởi tạo model instance.
      */
     public function model(): Model
     {
-        return app($this->getModelClass());
+        $class = $this->modelClass();
+        return new $class;
     }
 
     /**
-     * Get the resource instance.
-     *
-     * @param mixed $data
-     * @return JsonResource
+     * Lấy toàn bộ record.
+     */
+    public function all(): Collection
+    {
+        return $this->model()->newQuery()->get();
+    }
+
+    /**
+     * Tìm record theo ID.
+     */
+    public function find(int $id): ?Model
+    {
+        return $this->model()->newQuery()->find($id);
+    }
+
+    /**
+     * Tạo record mới.
+     */
+    public function create(array $data): Model
+    {
+        return $this->model()->newQuery()->create($data);
+    }
+
+    /**
+     * Cập nhật record.
+     */
+    public function update(int $id, array $data): bool
+    {
+        $record = $this->find($id);
+        return $record ? $record->update($data) : false;
+    }
+
+    /**
+     * Xóa record.
+     */
+    public function delete(int $id): bool
+    {
+        $record = $this->find($id);
+        return $record ? (bool) $record->delete() : false;
+    }
+
+    /**
+     * Convert dữ liệu sang resource.
      */
     public function resource($data): JsonResource
     {
-        return app($this->getResourceClass(), ['resource' => $data]);
+        $resource = $this->resourceClass();
+
+        if ($data instanceof Collection || is_array($data)) {
+            return $resource::collection($data);
+        }
+
+        return new $resource($data);
     }
 }

@@ -2,103 +2,64 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\BaseRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseServices
 {
-    /**
-     * Get the model class name.
-     *
-     * @return string
-     */
-    abstract protected function getModelClass(): string;
+    protected BaseRepository $repository;
+
+    public function __construct(BaseRepository $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Get the resource class name.
-     *
-     * @return string|null
+     * Trả về tên class Resource (override nếu cần).
      */
     protected function getResourceClass(): ?string
     {
         return JsonResource::class;
     }
 
-    /**
-     * Get all records.
-     *
-     * @return Collection
-     */
     public function getAll(): Collection
     {
-        return $this->model()->newQuery()->get();
+        return $this->repository->all();
     }
 
-    /**
-     * Find by ID.
-     *
-     * @param int|string $id
-     * @return Model|null
-     */
-    public function findById($id): ?Model
+    public function findById(int|string $id): ?Model
     {
-        return $this->model()->find($id);
+        return $this->repository->find($id);
     }
 
-    /**
-     * Create new record.
-     *
-     * @param array $data
-     * @return Model
-     */
     public function create(array $data): Model
     {
-        return $this->model()->create($data);
+        return $this->repository->create($data);
     }
 
-    /**
-     * Update record by ID.
-     *
-     * @param int|string $id
-     * @param array $data
-     * @return bool
-     */
-    public function update($id, array $data): void
+    public function update(int|string $id, array $data): bool
     {
-        $model = $this->findById($id);
-
-        if ($model) {
-            $model->update($data);
-        }
+        return $this->repository->update($id, $data);
     }
-    /**
-     * Delete record by ID.
-     *
-     * @param int|string $id
-     * @return bool
-     */
-    public function delete($id): void
+
+    public function delete(int|string $id): bool
     {
-        $model = $this->findById($id);
-
-        if ($model) {
-            $model->delete();
-        }
+        return $this->repository->delete($id);
     }
 
-
     /**
-     * Transform model to resource.
-     *
-     * @param mixed $data
-     * @return JsonResource|mixed
+     * Convert data sang Resource (nếu có).
      */
     public function resource($data)
     {
         $resourceClass = $this->getResourceClass();
 
         if ($resourceClass) {
+            if ($data instanceof Collection || is_array($data)) {
+                return $resourceClass::collection($data);
+            }
             return new $resourceClass($data);
         }
 
